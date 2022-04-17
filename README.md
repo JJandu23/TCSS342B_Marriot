@@ -1,5 +1,5 @@
 # TCSS342B_Marriot
-Hello all this is has all of my work from TCSS 342B Spring 2022
+Hello all this is has is all of the work I did for TCSS 342.
 
 # Rules
 1. Please do use this wisely and try to understand what the code is doing.
