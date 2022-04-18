@@ -1,3 +1,4 @@
+// MyPriorityQueue class
 public class MyPriorityQueue<Type extends Comparable<Type>> {
 
     private MyArrayList<Type> heap;
@@ -14,20 +15,16 @@ public class MyPriorityQueue<Type extends Comparable<Type>> {
 
     // O(log n)
     public Type removeMin() {
-        Type temp = heap.get(0);
+        Type item = heap.get(0);
         heap.set(0, heap.get(size() - 1));
-        heap.remove((size() - 1));
+        heap.remove(size() - 1);
         sinkDown();
-        return temp;
+        return item;
     }
 
     // O(1)
     public Type min() {
-        if (heap.size() == 0) {
-            return heap.get(0);
-        } else {
-            return heap.get(0);
-        }
+        return heap.get(0);
     }
 
     // O(1)
@@ -47,27 +44,20 @@ public class MyPriorityQueue<Type extends Comparable<Type>> {
     // Returns a string representation of the heap.
     // O(n)
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < heap.size(); i++) {
-            sb.append(heap.get(i)).append(" ");
-        }
-        return sb.toString();
+        return heap.toString();
     }
 
     // Bubbles the node at index i up to the proper place in the heap.
     // O(log n)
     private void bubbleUp() {
-        if (heap.size() == 0) {
-            return;
-        }
         int index = heap.size() - 1;
         while (index > 0) {
-            Type temp = heap.get(index);
-            Type parent = heap.get(parent(index));
-            if (heap.get(index).compareTo(heap.get(parent(index))) < 0) {
-                heap.set(index, parent);
-                heap.set(parent(index), heap.get(index));
-                index = parent(index);
+            int parent = parent(index);
+            if (heap.get(parent).compareTo(heap.get(index)) > 0) {
+                Type temp = heap.get(parent);
+                heap.set(parent, heap.get(index));
+                heap.set(index, temp);
+                index = parent;
             } else {
                 break;
             }
@@ -120,3 +110,4 @@ public class MyPriorityQueue<Type extends Comparable<Type>> {
         return index * 2 + 2;
     }
 }
+
