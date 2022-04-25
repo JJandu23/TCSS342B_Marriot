@@ -16,6 +16,7 @@ public class MyPriorityQueue<Type extends Comparable<Type>> {
     // O(log n)
     public Type removeMin() {
         Type item = heap.get(0);
+        if (item == null) return null;
         heap.set(0, heap.get(size() - 1));
         heap.remove(size() - 1);
         sinkDown();
