@@ -39,9 +39,7 @@ public class BookReader {
                 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W',
                 'X', 'Y', 'Z', '\''
         };
-
         char[] arr = book.toCharArray();
-
         String s = "";
         int k = 0;
         //O(n) loop
@@ -68,7 +66,6 @@ public class BookReader {
                     words.addAfter(s);
                     words.next();
                 }
-
                 s = "";
             }
         }
