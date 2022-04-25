@@ -21,6 +21,7 @@ public class MyArrayList<Type extends Comparable<Type>> {
         size++;
     }
 
+    @SuppressWarnings("unchecked")
     public Type remove(int index) {
         if (index > size)
             return null;
@@ -34,6 +35,7 @@ public class MyArrayList<Type extends Comparable<Type>> {
         return element;
     }
 
+    @SuppressWarnings("unchecked")
     public boolean contains(Type item) {
         comparisons++;
         //O(n) Loop
@@ -43,11 +45,11 @@ public class MyArrayList<Type extends Comparable<Type>> {
                 if (((Type) list[i]).compareTo(item) == 0)
                     return true;
             }
-
         }
         return false;
     }
 
+    @SuppressWarnings("unchecked")
     public int indexOf(Type item) {
         //O(n)
         for (int i = 0; i < list.length; i++) {
@@ -58,9 +60,10 @@ public class MyArrayList<Type extends Comparable<Type>> {
         return -1;
     }
 
+    @SuppressWarnings("unchecked")
     public Type get(int index) {
         //O(1)
-        return index > size || index < 0 ? null : (Type) list[index];
+        return index >= size || index < 0 ? null : (Type) list[index];
     }
 
     public void set(int index, Type item) {
@@ -100,6 +103,7 @@ public class MyArrayList<Type extends Comparable<Type>> {
         list = temp;
     }
 
+    @SuppressWarnings("unchecked")
     public void sort() {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size - 1; j++) {
