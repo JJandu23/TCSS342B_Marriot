@@ -19,9 +19,7 @@ public class MyLinkedList<Type extends Comparable<Type>> {
     public void addBefore(Type item) {
         Node newNode = new Node();
         newNode.item = item;
-
         size++;
-
         if (current != null) {
             if (previous != null) {
                 previous.next = newNode;
@@ -48,7 +46,6 @@ public class MyLinkedList<Type extends Comparable<Type>> {
             return;
         }
         Node temp = first;
-
         while (temp != null) {
             if (temp.next == null) {
                 temp.next = newNode;
@@ -63,10 +60,8 @@ public class MyLinkedList<Type extends Comparable<Type>> {
             return;
         }
         size++;
-
         Node node = new Node();
         node.item = item;
-
         Node rightSubtree = current.next;
         //right subtree
         if (rightSubtree != null) {
@@ -141,6 +136,7 @@ public class MyLinkedList<Type extends Comparable<Type>> {
         if (size <= 0) {
             return;
         }
+
         for (int i = 0; i < size; i++) {
             Node curr = this.first;
             Node next = this.first.next;
@@ -155,7 +151,6 @@ public class MyLinkedList<Type extends Comparable<Type>> {
             }
         }
     }
-
 
     @Override
     public String toString() {
