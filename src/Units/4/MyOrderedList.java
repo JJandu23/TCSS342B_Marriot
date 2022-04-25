@@ -38,28 +38,30 @@ public class MyOrderedList<Type extends Comparable<Type>> {
         return list.toString();
     }
 
-    public boolean binarySearch(Type item) {
+    public Type binarySearch(Type item) {
         return binarySearch(item, 0, list.size() - 1);
     }
 
-    private boolean binarySearch(Type item, int start, int finish) {
+    private Type binarySearch(Type item, int start, int finish) {
         if (start > finish) {
             comparisons++;
-            return false;
+            return null;
         }
-
         comparisons++;
         int mid = start + (finish - start) / 2;
         if (list.get(mid).compareTo(item) == 0) {
             comparisons++;
-            return true;
+            return list.get(mid);
         }
-
         comparisons++;
         if (item.compareTo(list.get(mid)) < 0) {
             comparisons++;
             return binarySearch(item, start, mid - 1);
         }
         return binarySearch(item, mid + 1, finish);
+    }
+
+    public Type get(int index) {
+        return list.get(index);
     }
 }
