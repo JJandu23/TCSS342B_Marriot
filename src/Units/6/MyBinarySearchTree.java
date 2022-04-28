@@ -4,8 +4,23 @@ public class MyBinarySearchTree<Type extends Comparable<Type>> {
     private boolean balancing;
     private long comparisons;
 
+    class Node {
+        Type item;
+        Node left;
+        Node right;
+        int height;
+
+        Node(Type item) {
+            this.item = item;
+        }
+
+        public String toString() {
+            return item.toString();
+        }
+    }
+
     public void add(Type item) {
-        root = add(root, item);
+        root = add(item, root);
     }
 
     private Node add(Type item, Node subtree) {
@@ -22,7 +37,7 @@ public class MyBinarySearchTree<Type extends Comparable<Type>> {
     }
 
     public void remove(Type item) {
-        root = remove(root, item);
+        root = remove(item, root);
     }
 
     private Node remove(Type item, Node subtree) {
@@ -39,7 +54,7 @@ public class MyBinarySearchTree<Type extends Comparable<Type>> {
             } else if (subtree.right == null) {
                 return subtree.left;
             }
-            subtree.item = findMin(subtree.right).item;
+            subtree.item = find((Type) subtree.right);
             subtree.right = remove(subtree.item, subtree.right);
         }
         return subtree;
@@ -47,7 +62,7 @@ public class MyBinarySearchTree<Type extends Comparable<Type>> {
 
     public Type find(Type item) {
         comparisons = 0;
-        return find(root, item);
+        return find(item, root);
     }
 
     private Type find(Type item, Node subtree) {
@@ -79,27 +94,24 @@ public class MyBinarySearchTree<Type extends Comparable<Type>> {
         if (node == null) {
             return;
         }
-        int leftHeight = height(node.left);
-        int rightHeight = height(node.right);
-        node.height = 1 + Math.max(leftHeight, rightHeight);
+        node.height = 1 + Math.max(height(node.left), height(node.right));
+    }
+
+    private int height(Node node) {
+        if (node == null) {
+            return -1;
+        }
+        return node.height;
     }
 
     public String toString() {
         return toString(root);
     }
-}
 
-class Node{
-    Type item;
-    Node left;
-    Node right;
-    int height;
-
-    Node(Type item) {
-        this.item = item;
-    }
-
-    public String toString() {
-        return item.toString();
+    private String toString(Node root) {
+        if (root == null) {
+            return "";
+        }
+        return toString(root.left) + root.toString() + toString(root.right);
     }
 }
