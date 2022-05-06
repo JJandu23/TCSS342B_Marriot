@@ -1,5 +1,5 @@
 # TCSS342B_Marriot
-Hello all this is all of my work from TCSS 342.
+Hello, this is all of my work from TCSS 342.
 
 # Rules
 1. Understand what the code is doing.
