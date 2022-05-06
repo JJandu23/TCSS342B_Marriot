@@ -1,5 +1,4 @@
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -13,12 +12,11 @@ public class BookReader {
     }
 
     public void readBook(String fileName) {
-        System.out.print("Reading input file \"./" + fileName + "\"...");
+        System.out.print("Reading input file \"./" + fileName + "\"... ");
 
-        //File file = new File(fileName);
         long t1 = System.nanoTime();
         try {
-            book = new String(Files.readAllBytes(Paths.get(fileName)), StandardCharsets.UTF_8);
+            book = Files.readString(Paths.get(fileName));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -46,18 +44,17 @@ public class BookReader {
         int k = 0;
         //O(n) loop
         long t1 = System.nanoTime();
-        for (int i = 0; i < arr.length; i++) {
+        for (char c : arr) {
             boolean found = false;
-            innerloop:
             //O(1) constant loop
-            for (int j = 0; j < characters.length; j++) {
-                if (arr[i] == characters[j]) {
+            for (char character : characters) {
+                if (c == character) {
                     found = true;
-                    break innerloop;
+                    break;
                 }
             }
             if (found) {
-                s += String.valueOf(arr[i]);
+                s += String.valueOf(c);
                 found = false;
             } else if (!s.isBlank()) {
                 if (k == 0) {
