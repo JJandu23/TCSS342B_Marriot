@@ -2,9 +2,9 @@ public class UniqueWords {
     private BookReader book = new BookReader("WarAndPeace.txt");
 
     public UniqueWords() {
-        addUniqueWordsToArrayList();
-        addUniqueWordsToLinkedList();
-        addUniqueWordsToOrderedList();
+//        addUniqueWordsToArrayList();
+//        addUniqueWordsToLinkedList();
+//        addUniqueWordsToOrderedList();
         addUniqueWordsToBST();
     }
 
@@ -13,7 +13,7 @@ public class UniqueWords {
         MyLinkedList<String> llist = new MyLinkedList<>();
 
         int k = 0;
-        long t1 = System.nanoTime();
+        long t1 = System.currentTimeMillis();
         while (t != null) {
             if (!llist.contains(t)) {
                 if (k == 0) {
@@ -29,17 +29,9 @@ public class UniqueWords {
             t = book.getWords().next();
         }
         long t2 = System.nanoTime();
-
-
-        System.out.println("\nAdding unique words to a linked list... in " + ((t2 - t1) / 1000000000) + " seconds.");
-        System.out.println(llist.size() + " unique words");
-        System.out.println(Math.abs(llist.comparisons) + " comparisons");
-        t1 = System.nanoTime();
-        llist.sort();
-        t2 = System.nanoTime();
-        System.out.println("Bubble sorting linked list... in " + ((t2 - t1) / 1000000000) + " seconds.");
     }
 
+//    }
 //    public void addUniqueWordsToArrayList() {
 //        String t = book.getWords().first();
 //        MyArrayList<String> list = new MyArrayList<>();
@@ -86,24 +78,49 @@ public class UniqueWords {
 
     public void addUniqueWordsToBST() {
         String t = book.getWords().first();
-        MyBST<String> bst = new MyBST<>();
+        MyBinarySearchTree<String> tree = new MyBinarySearchTree<>();
 
         long t1 = System.nanoTime();
         while (t != null) {
-            if (!bst.contains(t)) {
-                bst.add(t);
-            }
+            if(tree.find(t) == null)
+                tree.add(t);
 
             t = book.getWords().next();
         }
         long t2 = System.nanoTime();
 
-        System.out.println("\nAdding unique words to a binary search tree... in " + ((t2 - t1) / 1000000000) + " seconds.");
-        System.out.println(bst.size() + " unique words");
-        System.out.println(Math.abs(bst.comparisons) + " comparisons");
+        System.out.println("\nAdding unique words to a binary search tree... in " + ((t2 - t1) / 1000000) + " milliseconds.");
+        System.out.println(tree.size() + " unique words");
+        System.out.println("The binary search tree had a height of " + tree.height() +
+                " and made " + Math.abs(tree.comparisons) + " comparisons.");
         t1 = System.nanoTime();
-        bst.sort();
+        tree.toString();
         t2 = System.nanoTime();
-        System.out.println("Bubble sorting binary search tree... in " + ((t2 - t1) / 1000000000) + " seconds.");
+        System.out.println("Traversing the binary search tree... in " + ((t2 - t1) / 1000000) + " milliseconds.");
+    }
+
+    public static void main(String[] args) {
+        new UniqueWords();
     }
 }
+//        String t = book.getWords().first();
+//        MyBinarySearchTree<String> tree = new MyBinarySearchTree<>();
+//
+//        long t1 = System.currentTimeMillis();
+//        while (t != null) {
+//            if (!tree.toString().contains(t)) {
+//                tree.add(t);
+//            }
+//            t = book.getWords().next();
+//        }
+//        long t2 = System.currentTimeMillis();
+//
+//        System.out.println("\nAdding unique words to a binary search tree... in " + ((t2 - t1) / 1000000000) + " milliseconds.");
+//        System.out.println(tree.size() + " unique words");
+//        System.out.println(Math.abs(tree.height()) + " comparisons");
+//        t1 = System.currentTimeMillis();
+//        tree.height();
+//        t2 = System.currentTimeMillis();
+//        System.out.println("Bubble sorting binary search tree... in " + ((t2 - t1) / 1000000000) + " milliseconds.");
+//    }
+//}
