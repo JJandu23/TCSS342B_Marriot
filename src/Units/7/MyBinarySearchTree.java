@@ -1,7 +1,6 @@
 import java.util.Stack;
 
 public class MyBinarySearchTree<Type extends Comparable<Type>> {
-    public int rotations = 0;
 
     class Node {
         public Type item;
@@ -10,9 +9,7 @@ public class MyBinarySearchTree<Type extends Comparable<Type>> {
         public int height = 0;
 
         public int balanceFactor() {
-            int leftHeight = left == null ? 0 : left.height;
-            int rightHeight = right == null ? 0 : right.height;
-            return leftHeight - rightHeight;
+            return height(left) - height(right);
         }
 
         // Constructor
@@ -22,15 +19,15 @@ public class MyBinarySearchTree<Type extends Comparable<Type>> {
 
         @Override
         public String toString() {
-            return item.toString() + ":H" + height;
+            return item.toString() + ":H" + height + ":B" + balanceFactor();
         }
     }
 
     private Node root;
     private int size;
     public long comparisons;
-
-    private boolean balancing = false;
+    private boolean balancing = true;
+    public Integer rotations = 0;
 
     public MyBinarySearchTree() {
         root = null;
@@ -48,15 +45,41 @@ public class MyBinarySearchTree<Type extends Comparable<Type>> {
 
     private Node add(Type item, Node subtree) {
         if (subtree == null) {
-            subtree = new Node(item);
             size++;
+            return new Node(item);
+
         } else if (item.compareTo(subtree.item) < 0) {
             subtree.left = add(item, subtree.left);
         } else if (item.compareTo(subtree.item) > 0) {
             subtree.right = add(item, subtree.right);
+        } else {
+            return subtree;
         }
-        updateHeight(subtree);
+
+        if (balancing) {
+            subtree.height = 1 + Math.max(height(subtree.left), height(subtree.right));
+            int balance = subtree.balanceFactor();
+            if (balance > 1 && item.compareTo(subtree.left.item) < 0) {
+                return rotateRight(subtree);
+
+            } else if (balance < -1 && item.compareTo(subtree.right.item) > 0) {
+                return rotateLeft(subtree);
+
+            } else if (balance > 1 && item.compareTo(subtree.left.item) > 0) {
+                subtree.left = rotateLeft(subtree.left);
+                return rotateRight(subtree);
+
+            } else if (balance < -1 && item.compareTo(subtree.right.item) < 0) {
+                subtree.right = rotateRight(subtree.right);
+                return rotateLeft(subtree);
+            }
+
+        } else {
+            subtree.height = 1 + Math.max(height(subtree.left), height(subtree.right));
+        }
+
         return subtree;
+
     }
 
     public void remove(Type item) {
@@ -66,40 +89,35 @@ public class MyBinarySearchTree<Type extends Comparable<Type>> {
     private Node remove(Type item, Node subtree) {
         if (subtree == null) {
             return null;
-        }
-        if (item.compareTo(subtree.item) < 0) {
+        } else if (item.compareTo(subtree.item) < 0) {
             subtree.left = remove(item, subtree.left);
-        }
-        else if (item.compareTo(subtree.item) > 0) {
+        } else if (item.compareTo(subtree.item) > 0) {
             subtree.right = remove(item, subtree.right);
-        }
-        else if(item.compareTo(subtree.item) == 0){
+        } else if (subtree.left != null && subtree.right != null) {
+            subtree.item = find(subtree.right.item, subtree.left);
+            subtree.right = remove(subtree.item, subtree.right);
+        } else {
+            subtree = (subtree.left != null) ? subtree.left : subtree.right;
             size--;
-            //System.out.println("Found: " + subtree.item + ", search: " + item);
-
-            //destination has one leaves or none
-            if (subtree.left == null) {
-                return subtree.right;
-            }
-            else if (subtree.right == null) {
-                return subtree.left;
-            }
-
-            //Destination has 2 children
-            //Get the inorder successor of this subtree
-            Node current = subtree.right;
-            Type min = current.item;
-            while(current.left != null) {
-                min = current.left.item;
-                current = current.left;
-            }
-
-            subtree.item = min;
-
-            subtree.right = remove(min, subtree.right);
-
         }
-        updateHeight(subtree);
+        if (balancing) {
+            subtree.height = 1 + Math.max(height(subtree.left), height(subtree.right));
+            int balance = subtree.balanceFactor();
+            if (balance > 1 && item.compareTo(subtree.left.item) < 0) {
+                return rotateRight(subtree);
+            }
+            if (balance < -1 && item.compareTo(subtree.right.item) > 0) {
+                return rotateLeft(subtree);
+            }
+            if (balance > 1 && item.compareTo(subtree.left.item) > 0) {
+                subtree.left = rotateLeft(subtree.left);
+                return rotateRight(subtree);
+            }
+            if (balance < -1 && item.compareTo(subtree.right.item) < 0) {
+                subtree.right = rotateRight(subtree.right);
+                return rotateLeft(subtree);
+            }
+        }
         return subtree;
     }
 
@@ -111,8 +129,7 @@ public class MyBinarySearchTree<Type extends Comparable<Type>> {
         comparisons++;
         if (subtree == null) {
             return null;
-        }
-        if (item.compareTo(subtree.item) < 0) {
+        } else if (item.compareTo(subtree.item) < 0) {
             return find(item, subtree.left);
         } else if (item.compareTo(subtree.item) > 0) {
             return find(item, subtree.right);
@@ -134,10 +151,15 @@ public class MyBinarySearchTree<Type extends Comparable<Type>> {
     }
 
     private void updateHeight(Node node) {
-        node.height = Math.max(height(node.left), height(node.right)) + 1;
+        if (node != null) {
+            node.height = 1 + Math.max(height(node.left), height(node.right));
+        } else {
+            node.height = 0;
+        }
     }
 
     private Node rotateRight(Node node) {
+        rotations++;
         Node temp = node.left;
         node.left = temp.right;
         temp.right = node;
@@ -147,6 +169,7 @@ public class MyBinarySearchTree<Type extends Comparable<Type>> {
     }
 
     private Node rotateLeft(Node node) {
+        rotations++;
         Node temp = node.right;
         node.right = temp.left;
         temp.left = node;
@@ -156,23 +179,27 @@ public class MyBinarySearchTree<Type extends Comparable<Type>> {
     }
 
     private Node rebalance(Node node) {
-        updateHeight(node);
-        if (height(node.left) - height(node.right) == 2) {
-            if (height(node.left.left) >= height(node.left.right)) {
-                node = rotateRight(node);
-            }
-            else {
-                node.left = rotateLeft(node.left);
-                node = rotateRight(node);
-            }
+        if (node == null) {
+            return null;
         }
-        else if (height(node.right) - height(node.left) == 2) {
-            if (height(node.right.right) >= height(node.right.left)) {
-                node = rotateLeft(node);
-            }
-            else {
-                node.right = rotateRight(node.right);
-                node = rotateLeft(node);
+        int leftHeight = node.left == null ? 0 : node.left.height;
+        int rightHeight = node.right == null ? 0 : node.right.height;
+        node.height = Math.max(leftHeight, rightHeight) + 1;
+
+        if (balancing) {
+            int balanceFactor = node.balanceFactor();
+            if (balanceFactor > 1) {
+                if (node.left.balanceFactor() < 0) {
+                    node.left = rotateLeft(node.left);
+                }
+                rotations++;
+                return rotateRight(node);
+            } else if (balanceFactor < -1) {
+                if (node.right.balanceFactor() > 0) {
+                    node.right = rotateRight(node.right);
+                }
+                rotations++;
+                return rotateLeft(node);
             }
         }
         return node;
@@ -188,7 +215,7 @@ public class MyBinarySearchTree<Type extends Comparable<Type>> {
 
     @Override
     public String toString() {
-        if(root == null)
+        if (root == null)
             return "[]";
 
         StringBuilder sb = new StringBuilder("[");
@@ -197,9 +224,9 @@ public class MyBinarySearchTree<Type extends Comparable<Type>> {
 
         //O(n)
         //keep looping as long as there are elements to discover
-        while(!stack.isEmpty() || current != null) {
+        while (!stack.isEmpty() || current != null) {
             //if subtree is not empty then keep going left and stacking
-            while(current != null) {
+            while (current != null) {
                 stack.push(current);
                 current = current.left;
             }
@@ -218,10 +245,9 @@ public class MyBinarySearchTree<Type extends Comparable<Type>> {
 
             //add a separator if the stack is not empty
             //or if there is a right node for this current subtree
-            if(!stack.isEmpty() || current != null)
+            if (!stack.isEmpty() || current != null)
                 sb.append(", ");
         }
-
         return sb.append("]").toString();
     }
 }
