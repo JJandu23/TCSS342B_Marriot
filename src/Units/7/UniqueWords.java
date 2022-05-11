@@ -110,7 +110,7 @@ public class UniqueWords {
 
         long t1 = System.nanoTime();
         while (t != null) {
-            if(tree.find(t) == null)
+            if (tree.find(t) == null)
                 tree.add(t);
 
             t = book.getWords().next();
