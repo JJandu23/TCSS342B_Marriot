@@ -1,5 +1,5 @@
 public class MyLinkedList<Type extends Comparable<Type>> {
-    private class Node{
+    private class Node {
         public Type item;
         public Node next;
 
@@ -16,14 +16,14 @@ public class MyLinkedList<Type extends Comparable<Type>> {
 
     public int comparisons = 0;
 
-    public void addBefore(Type item){
+    public void addBefore(Type item) {
         Node newNode = new Node();
         newNode.item = item;
 
         size++;
 
-        if(current != null) {
-            if(previous != null) {
+        if (current != null) {
+            if (previous != null) {
                 previous.next = newNode;
                 newNode.next = current;
                 previous = newNode;
@@ -39,20 +39,20 @@ public class MyLinkedList<Type extends Comparable<Type>> {
         }
 
         //current is null
-        if(previous != null) {
+        if (previous != null) {
             previous.next = newNode;
             previous = newNode;
             return;
         }
-        if(first == null) {
+        if (first == null) {
             first = newNode;
             return;
         }
 
         Node temp = first;
 
-        while(temp != null) {
-            if(temp.next == null) {
+        while (temp != null) {
+            if (temp.next == null) {
                 temp.next = newNode;
                 break;
             }
@@ -61,8 +61,8 @@ public class MyLinkedList<Type extends Comparable<Type>> {
         }
     }
 
-    public void addAfter(Type item){
-        if(current == null){
+    public void addAfter(Type item) {
+        if (current == null) {
             return;
         }
         size++;
@@ -72,7 +72,7 @@ public class MyLinkedList<Type extends Comparable<Type>> {
 
         Node rightSubtree = current.next;
         //right subtree
-        if(rightSubtree != null) {
+        if (rightSubtree != null) {
             current.next = node;
             node.next = rightSubtree;
             return;
@@ -81,17 +81,17 @@ public class MyLinkedList<Type extends Comparable<Type>> {
         current.next = node;
     }
 
-    public Type current(){
+    public Type current() {
         return current == null ? null : current.item;
     }
 
-    public Type first(){
+    public Type first() {
         current = first;
         return this.first.item;
     }
 
-    public Type next(){
-        if(current != null){
+    public Type next() {
+        if (current != null) {
             previous = current;
             current = current.next;
             return current == null ? null : current();
@@ -99,8 +99,8 @@ public class MyLinkedList<Type extends Comparable<Type>> {
         return null;
     }
 
-    public Type remove(){
-        if(current == null){
+    public Type remove() {
+        if (current == null) {
             return null;
         }
         size--;
@@ -108,7 +108,7 @@ public class MyLinkedList<Type extends Comparable<Type>> {
         Type item = current();
 
         //head to remove
-        if(previous == null && first == current) {
+        if (previous == null && first == current) {
             current = current.next;
             first = current;
             return item;
@@ -121,15 +121,15 @@ public class MyLinkedList<Type extends Comparable<Type>> {
         return item;
     }
 
-    public boolean contains(Type item){
+    public boolean contains(Type item) {
         comparisons++;
-        if(size == 0)
+        if (size == 0)
             return false;
 
         Node temp = first;
         while (temp != null) {
             comparisons++;
-            if(temp.item.compareTo(item) == 0)
+            if (temp.item.compareTo(item) == 0)
                 return true;
             temp = temp.next;
         }
@@ -137,24 +137,23 @@ public class MyLinkedList<Type extends Comparable<Type>> {
         return false;
     }
 
-    public int size(){
+    public int size() {
         return this.size;
     }
 
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return size == 0;
     }
 
     public void sort() {
-        if(size <= 0) {
+        if (size <= 0) {
             return;
         }
-
-        for(int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++) {
             Node curr = this.first;
             Node next = this.first.next;
-            for(int j = 0; j < size - 1; j++) {
-                if(curr.item.compareTo(next.item) > 0) {
+            for (int j = 0; j < size - 1; j++) {
+                if (curr.item.compareTo(next.item) > 0) {
                     Type temp = curr.item;
                     curr.item = next.item;
                     next.item = temp;
@@ -168,7 +167,7 @@ public class MyLinkedList<Type extends Comparable<Type>> {
 
     @Override
     public String toString() {
-        if(isEmpty())
+        if (isEmpty())
             return "[]";
         String s = "[";
         Node temp = first;
@@ -177,7 +176,6 @@ public class MyLinkedList<Type extends Comparable<Type>> {
             s = s.concat(temp.next == null ? "]" : ", ");
             temp = temp.next;
         }
-
         return s;
     }
 }
