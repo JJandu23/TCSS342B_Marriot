@@ -65,7 +65,6 @@ public class BookReader {
                     words.addAfter(s);
                     words.next();
                 }
-
                 s = "";
             }
         }
