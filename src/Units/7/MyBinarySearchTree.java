@@ -88,37 +88,57 @@ public class MyBinarySearchTree<Type extends Comparable<Type>> {
 
     private Node remove(Type item, Node subtree) {
         if (subtree == null) {
-            return null;
-        } else if (item.compareTo(subtree.item) < 0) {
+            return subtree;
+        }
+
+        if (item.compareTo(subtree.item) < 0) {
             subtree.left = remove(item, subtree.left);
         } else if (item.compareTo(subtree.item) > 0) {
             subtree.right = remove(item, subtree.right);
-        } else if (subtree.left != null && subtree.right != null) {
-            subtree.item = find(subtree.right.item, subtree.left);
-            subtree.right = remove(subtree.item, subtree.right);
         } else {
-            subtree = (subtree.left != null) ? subtree.left : subtree.right;
-            size--;
+            if (subtree.left == null) {
+                return subtree.right;
+            } else if (subtree.right == null) {
+                return subtree.left;
+            }
+
+            subtree.item = findMin(subtree.right).item;
+            subtree.right = remove(subtree.item, subtree.right);
         }
+
         if (balancing) {
             subtree.height = 1 + Math.max(height(subtree.left), height(subtree.right));
             int balance = subtree.balanceFactor();
-            if (balance > 1 && item.compareTo(subtree.left.item) < 0) {
+            if (balance > 1 && subtree.left.balanceFactor() >= 0) {
                 return rotateRight(subtree);
-            }
-            if (balance < -1 && item.compareTo(subtree.right.item) > 0) {
+
+            } else if (balance < -1 && subtree.right.balanceFactor() <= 0) {
                 return rotateLeft(subtree);
-            }
-            if (balance > 1 && item.compareTo(subtree.left.item) > 0) {
+
+            } else if (balance > 1 && subtree.left.balanceFactor() < 0) {
                 subtree.left = rotateLeft(subtree.left);
                 return rotateRight(subtree);
-            }
-            if (balance < -1 && item.compareTo(subtree.right.item) < 0) {
+
+            } else if (balance < -1 && subtree.right.balanceFactor() > 0) {
                 subtree.right = rotateRight(subtree.right);
                 return rotateLeft(subtree);
             }
+
+        } else {
+            subtree.height = 1 + Math.max(height(subtree.left), height(subtree.right));
         }
+
         return subtree;
+    }
+
+    private Node findMin(Node right) {
+        if (right == null) {
+            return null;
+        }
+        if (right.left == null) {
+            return right;
+        }
+        return findMin(right.left);
     }
 
     public Type find(Type item) {
