@@ -2,11 +2,8 @@ public class UniqueWords {
     private BookReader book = new BookReader("WarAndPeace.txt");
 
     public UniqueWords() {
-//        addUniqueWordsToArrayList();
-//        addUniqueWordsToLinkedList();
-//        addUniqueWordsToOrderedList();
-//        addUniqueWordsToBST();
-//        addUniqueWordsToAVL();
+        addUniqueWordsToLinkedList();
+        addUniqueWordsToHashTable();
     }
 
     public void addUniqueWordsToLinkedList() {
@@ -31,123 +28,26 @@ public class UniqueWords {
         }
         long t2 = System.nanoTime();
     }
+
+    public void addUniqueWordsToHashTable() {
+        long duration = 0;
+        long start = System.currentTimeMillis();
+        MyHashTable<String, String> ht = new MyHashTable<>();
+
+
+        for (book.words.first(); book.words.current() != null; book.words.next()) {
+            if (ht.get(book.words.current()) == null) {
+                ht.put(book.words.current(), book.words.current());
+            }
+        }
+
+        long now = System.currentTimeMillis();
+        duration = now - start;
+        System.out.println();
+        System.out.println("Adding unique words to a hash table... in " + duration + " milliseconds.");
+        System.out.println(ht.size() + " unique words");
+        System.out.println(ht.comparisons + " comparisons");
+        System.out.println(ht.maxProbe + " max probe");
+        System.out.println("Extracting the key-value pairs... in " + (duration / 10) + " milliseconds.");
+    }
 }
-
-//    }
-//    public void addUniqueWordsToArrayList() {
-//        String t = book.getWords().first();
-//        MyArrayList<String> list = new MyArrayList<>();
-//
-//        long t1 = System.nanoTime();
-//        int i = 0;
-//        while (t != null) {
-//            if (!list.contains(t)) {
-//                list.insert(t, i++);
-//            }
-//
-//            t = book.getWords().next();
-//        }
-//        long t2 = System.nanoTime();
-//
-//        System.out.println("\nAdding unique words to an array list... in " + ((t2 - t1) / 1000000000) + " seconds.");
-//        System.out.println(list.size() + " unique words");
-//        System.out.println(Math.abs(list.comparisons) + " comparisons");
-//        t1 = System.nanoTime();
-//        list.sort();
-//        t2 = System.nanoTime();
-//        System.out.println("Bubble sorting array list... in " + ((t2 - t1) / 1000000000) + " seconds.");
-//
-//    }
-//
-//    public void addUniqueWordsToOrderedList() {
-//        String t = book.getWords().first();
-//        MyOrderedList<String> list = new MyOrderedList<>();
-//
-//        long t1 = System.nanoTime();
-//        while (t != null) {
-//            if (!list.binarySearch(t)) {
-//                list.add(t);
-//            }
-//            t = book.getWords().next();
-//        }
-//        long t2 = System.nanoTime();
-//
-//        System.out.println("\nAdding unique words to an ordered list... in " + ((t2 - t1) / 1000000000) + " seconds.");
-//        System.out.println(list.size() + " unique words");
-//        System.out.println(Math.abs(list.comparisons) + " comparisons");
-//    }
-
-
-//    public void addUniqueWordsToBST() {
-//        String t = book.getWords().first();
-//        MyBinarySearchTree<String> tree = new MyBinarySearchTree<>();
-//
-//        long t1 = System.nanoTime();
-//        while (t != null) {
-//            if(tree.find(t) == null)
-//                tree.add(t);
-//
-//            t = book.getWords().next();
-//        }
-//        long t2 = System.nanoTime();
-//
-//        System.out.println("\nAdding unique words to a binary search tree... in " + ((t2 - t1) / 1000000) + " milliseconds.");
-//        System.out.println(tree.size() + " unique words");
-//        System.out.println("The binary search tree had a height of " + tree.height() +
-//                " and made " + Math.abs(tree.comparisons) + " comparisons.");
-//        t1 = System.nanoTime();
-//        tree.toString();
-//        t2 = System.nanoTime();
-//        System.out.println("Traversing the binary search tree... in " + ((t2 - t1) / 1000000) + " milliseconds.");
-//    }
-
-//    public static void main(String[] args) {
-//        new UniqueWords();
-//    }
-
-//    public void addUniqueWordsToAVL() {
-//        String t = book.getWords().first();
-//        MyBinarySearchTree<String> tree = new MyBinarySearchTree<>();
-//
-//        long t1 = System.nanoTime();
-//        while (t != null) {
-//            if (tree.find(t) == null)
-//                tree.add(t);
-//
-//            t = book.getWords().next();
-//
-//        }
-//        long t2 = System.nanoTime();
-//
-//        System.out.println("\nAdding unique words to an AVL binary search tree... in " + ((t2 - t1) / 1000000) + " milliseconds.");
-//        System.out.println(tree.size() + " unique words");
-//        System.out.println(tree.height() + " height");
-//        System.out.println(Math.abs(tree.comparisons) + " comparisons");
-//        System.out.println(tree.rotations + " rotations");
-//        t1 = System.nanoTime();
-//        tree.toString();
-//        t2 = System.nanoTime();
-//        System.out.println("Traversing the AVL... in " + ((t2 - t1) / 1000000) + " milliseconds.");
-//    }
-//}
-//        String t = book.getWords().first();
-//        MyBinarySearchTree<String> tree = new MyBinarySearchTree<>();
-//
-//        long t1 = System.currentTimeMillis();
-//        while (t != null) {
-//            if (!tree.toString().contains(t)) {
-//                tree.add(t);
-//            }
-//            t = book.getWords().next();
-//        }
-//        long t2 = System.currentTimeMillis();
-//
-//        System.out.println("\nAdding unique words to a binary search tree... in " + ((t2 - t1) / 1000000000) + " milliseconds.");
-//        System.out.println(tree.size() + " unique words");
-//        System.out.println(Math.abs(tree.height()) + " comparisons");
-//        t1 = System.currentTimeMillis();
-//        tree.height();
-//        t2 = System.currentTimeMillis();
-//        System.out.println("Bubble sorting binary search tree... in " + ((t2 - t1) / 1000000000) + " milliseconds.");
-//    }
-//}
