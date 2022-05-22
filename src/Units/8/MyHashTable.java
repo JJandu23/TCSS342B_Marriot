@@ -20,50 +20,53 @@ public class MyHashTable<Key extends Comparable<Key>, Value> {
     }
 
     public Value get(Key key) {
-        int index = hash(key);
+        Integer index = hash(key);
+        Integer probe = 0;
         while (keyBuckets[index] != null) {
             if (keyBuckets[index].equals(key)) {
                 return valueBuckets[index];
             }
             index = (index + 1) % capacity;
+            probe++;
         }
         return null;
     }
 
     public void put(Key key, Value value) {
-        comparisons++;
-        int i = hash(key);
-        int probe = 1;
-        while (keyBuckets[i] != null) {
-            if (keyBuckets[i].equals(key)) {
-                maxProbe = Math.max(maxProbe, probe);
-                Value oldValue = valueBuckets[i];
-                valueBuckets[i] = value;
+        Integer index = hash(key);
+        Integer probe = 1;
+        while (keyBuckets[index] != null) {
+            if (keyBuckets[index].equals(key)) {
+                valueBuckets[index] = value;
                 return;
             }
-            comparisons++;
-            i = (i + 1) % capacity;
+            index = (index + 1) % capacity;
             probe++;
-            maxProbe = Math.max(maxProbe, probe);
         }
-        keyBuckets[i] = key;
-        valueBuckets[i] = value;
+        keyBuckets[index] = key;
+        valueBuckets[index] = value;
         size++;
-        keys.insert(key, size + 1);
+        keys.insert(key, 0);
+        comparisons += probe;
+        if (probe > maxProbe) {
+            maxProbe = probe;
+        }
     }
 
-    public int size() {
+    public Integer size() {
         return size;
     }
 
     public String toString() {
-        String s = "[";
-        for (int i = 0; i < capacity; i++) {
+        StringBuilder s = new StringBuilder();
+        s.append("[");
+        for (int i = 0; i < size; i++) {
             if (keyBuckets[i] != null) {
-                s = s.concat(keyBuckets[i].toString() + ":" + valueBuckets[i].toString());
-                s = s.concat(i != capacity - 1 ? ", " : "]");
+                s.append(keyBuckets[i].toString()).append(":").append(valueBuckets[i].toString()).append(", ");
             }
         }
-        return s;
+        s.delete(s.length() - 2, s.length());
+        s.append("]");
+        return s.toString();
     }
 }
