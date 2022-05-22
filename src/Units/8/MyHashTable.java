@@ -46,7 +46,7 @@ public class MyHashTable<Key extends Comparable<Key>, Value> {
         keyBuckets[index] = key;
         valueBuckets[index] = value;
         size++;
-        keys.insert(key, 0);
+        keys.insert(key, 1);
         comparisons += probe;
         if (probe > maxProbe) {
             maxProbe = probe;
