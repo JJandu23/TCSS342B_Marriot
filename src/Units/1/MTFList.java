@@ -1,39 +1,31 @@
 public class MTFList<Type extends Comparable<Type>> {
-    private MyLinkedList<Type> list;
-
-    public MTFList() {
-        list = new MyLinkedList<>();
-    }
+    private MyLinkedList<Type> list = new MyLinkedList<>();
 
     // O(1)
     public void add(Type item) {
         list.first();
         list.addBefore(item);
+        list.first();
     }
 
-    // TODO: implement remove with compareTo
     public Type remove(Type item) {
-        list.first();
-        while (list.current() != null) {
+        for (list.first(); list.current() != null; list.next()) {
             if (list.current().compareTo(item) == 0) {
                 return list.remove();
             }
-            list.next();
         }
         return null;
     }
 
-    // TODO: implement find with compareTo
     public Type find(Type item) {
-        list.first();
-        if (list.current() == null) {
-            return null;
-        }
-        while (list.current() != null) {
+        for (list.first(); list.current() != null; list.next()) {
             if (list.current().compareTo(item) == 0) {
-                return list.current();
+                Type temp = list.current();
+                list.remove();
+                list.first();
+                list.addBefore(temp);
+                return list.first();
             }
-            list.next();
         }
         return null;
     }
@@ -47,7 +39,7 @@ public class MTFList<Type extends Comparable<Type>> {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return list.toString();
     }
 }
