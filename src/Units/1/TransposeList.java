@@ -1,38 +1,34 @@
 public class TransposeList<Type extends Comparable<Type>> {
 
-    private MyLinkedList<Type> list;
-
-    public TransposeList() {
-        list = new MyLinkedList<>();
-    }
+    private MyLinkedList<Type> list = new MyLinkedList<>();
 
     public void add(Type item) {
         list.addBefore(item);
     }
 
     public Type remove(Type item) {
-        list.first();
-        while (list.current() != null) {
-            if (list.current().compareTo(item) == 0) {
-                return list.remove();
+        for(list.first(); list.current() != null; list.next()) {
+            if(list.current().compareTo(item) == 0) {
+                Type temp = list.remove();
+                while (list.current() != null) {
+                    list.next();
+                }
+                return temp;
             }
-            list.next();
         }
         return null;
     }
 
     public Type find(Type item) {
-        list.first();
-        if (list.current() == null) {
-            return null;
-        }
-
-        boolean found = false;
-        while (list.current() != null) {
+        for (list.first(); list.current() != null; list.next()) {
             if (list.current().compareTo(item) == 0) {
-                return list.current();
+                Type temp = list.current();
+                list.swapWithPrevious();
+                while (list.current() != null) {
+                    list.next();
+                }
+                return temp;
             }
-            list.next();
         }
         return null;
     }
