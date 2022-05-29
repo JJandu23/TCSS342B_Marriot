@@ -1,7 +1,24 @@
 public class MyLinkedList<Type extends Comparable<Type>> {
+    public void addToLast(Type item) {
+        Node tempNode = new Node(item);
+        if (first == null) {
+            first = tempNode;
+            previous = first;
+        } else {
+            previous.next = tempNode;
+            previous = tempNode;
+
+        }
+        size++;
+    }
+
     private class Node {
         public Type item;
         public Node next;
+
+        public Node(Type item) {
+            this.item = item;
+        }
 
         @Override
         public String toString() {
@@ -14,62 +31,79 @@ public class MyLinkedList<Type extends Comparable<Type>> {
     private Node previous = null;
     private int size = 0;
 
-    public int comparisons = 0;
+    public long comparisons = 0;
 
     public void addBefore(Type item) {
-        Node newNode = new Node();
-        newNode.item = item;
-        size++;
-        if (current != null) {
-            if (previous != null) {
-                previous.next = newNode;
-                newNode.next = current;
-                previous = newNode;
+        // If current is null and first is null add first node
+        if(current == null && first == null){
+            addFirst(item);
+        }
+        // If current is null and first = previous add to the end of the list and connect
+        else if(current == null &&  first == previous) {
+            addLast(item);
+            first.next = previous;
+        }
+        // If current is null add to the end of the list and connect
+        else if(current == null) {
+            addLast(item);
+
+        }
+        //if current is NOT null add new node before current and reconnect chain
+        else {
+            if (current == first){
+                Node tempNode = new Node(item);
+                tempNode.next = current;
+                previous = tempNode;
+                first = tempNode;
+            } else {
+                Node tempNode = new Node(item);
+                tempNode.next = current;
+                previous.next = tempNode;
+                previous = tempNode;
             }
-            //list is empty and previous is null
-            else {
-                first = previous = newNode;
-                newNode.next = current;
-                first.next = previous.next = current;
-            }
-            return;
+            size++;
         }
 
-        //current is null
-        if (previous != null) {
-            previous.next = newNode;
-            previous = newNode;
-            return;
-        }
-        if (first == null) {
-            first = newNode;
-            return;
-        }
-        Node temp = first;
-        while (temp != null) {
-            if (temp.next == null) {
-                temp.next = newNode;
-                break;
-            }
-            temp = temp.next;
-        }
+    }
+
+    private void addLast(Type item) {
+        Node tempNode = new Node(item);
+        previous.next = tempNode;
+        previous = tempNode;
+        size++;
+    }
+
+    private void addFirst(Type item) {
+        Node tempNode = new Node(item);
+        first = tempNode;
+        previous = first;
+        current = first;
+        size++;
     }
 
     public void addAfter(Type item) {
-        if (current == null) {
-            return;
+        // If current is null and first is null add first node
+        if(current == null && first == null){
+            addFirst(item);
         }
-        size++;
-        Node node = new Node();
-        node.item = item;
-        Node rightSubtree = current.next;
-        //right subtree
-        if (rightSubtree != null) {
-            current.next = node;
-            node.next = rightSubtree;
-            return;
+        // If current is null and first = previous add to the end of the list and connect
+        else if(current == null &&  first == previous) {
+            addLast(item);
+            first.next = previous;
         }
-        current.next = node;
+        // If current is null add to the end of the list and connect
+        else if(current == null) {
+            addLast(item);
+
+        }
+        //if current is NOT null add new node after current and reconnect chain
+        else {
+            Node tempNode = new Node(item);
+            tempNode.next = current.next;
+            current.next = tempNode;
+            previous = tempNode;
+            size++;
+        }
     }
 
     public Type current() {
