@@ -2,7 +2,7 @@ public class MyArrayList<Type extends Comparable<Type>> {
     private int capacity = 16;
     private Type[] list;
     private int size = 0;
-    public long comparisons = 0;
+    public long comparisons;
     private Type item;
 
     public MyArrayList() {
@@ -10,63 +10,64 @@ public class MyArrayList<Type extends Comparable<Type>> {
     }
 
     public void insert(Type item, int index) {
-        if (index > size || index < 0)
-            return;
-        //resize if we reach limit
-        if (size == capacity - 2)
-            resize();
-
-        //loop to move the item one index forward
-        //O(i) cost
-        if (size + 1 - index >= 0) System.arraycopy(list, index, list, index + 1, size + 1 - index);
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException();
+        }
+        if (size == capacity) {
+            capacity *= 2;
+            Type[] temp = (Type[]) new Comparable[capacity];
+            System.arraycopy(list, 0, temp, 0, size);
+            list = temp;
+        }
+        if (size - index >= 0) System.arraycopy(list, index, list, index + 1, size - index);
         list[index] = item;
         size++;
     }
 
     public Type remove(int index) {
-        if (index > size)
-            return null;
-        Type element = list[index];
-        //Loop to move down items
-        //runs in O(i)
-        System.arraycopy(list, index + 1, list, index, size - index);
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException();
+        }
+        Type item = list[index];
+        if (index < size - 1) System.arraycopy(list, index + 1, list, index, size - index - 1);
         size--;
-        return element;
+        return item;
     }
 
     public boolean contains(Type item) {
         comparisons++;
-        //O(n) Loop
-        for (Type type : list) {
-            if (type != null) {
-                comparisons++;
-                if (type.compareTo(item) == 0)
-                    return true;
+        for (int i = 0; i < size; i++) {
+            comparisons++;
+            if (list[i].compareTo(item) == 0) {
+                return true;
             }
         }
         return false;
     }
 
     public int indexOf(Type item) {
-        //O(n)
-        for (int i = 0; i < list.length; i++) {
-            if (list[i] != null)
-                if (list[i].compareTo(item) == 0)
-                    return i;
+        int value = -1;
+        for (int i = 0; i < size; i++) {
+            if (list[i].compareTo(item) == 0) {
+                value = i;
+                break;
+            }
         }
-        return -1;
+        return value;
     }
 
     public Type get(int index) {
-        //O(1)
-        return index >= size || index < 0 ? null : list[index];
+        if (index > capacity || index < 0) {
+            return null;
+        } else {
+            return list[index];
+        }
     }
 
     public void set(int index, Type item) {
-        if (index > size || index < 0)
-            return;
-        //O(1)
-        list[index] = item;
+        if (index < capacity && index >= 0) {
+            list[index] = item;
+        }
     }
 
     public int size() {
@@ -74,38 +75,74 @@ public class MyArrayList<Type extends Comparable<Type>> {
     }
 
     public boolean isEmpty() {
-        return size == 0;
+        return size() == 0;
     }
 
     @Override
     public String toString() {
-        String s = "[";
-        //O(n) loop
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
         for (int i = 0; i < size; i++) {
-            s = s.concat(list[i] == null ? "null" : list[i].toString());
-            s = s.concat(i != size - 1 ? ", " : "]");
+            sb.append(list[i]);
+            if (i < size - 1) {
+                sb.append(", ");
+            }
         }
-        return s;
+        sb.append("]");
+        return sb.toString();
     }
 
     private void resize() {
-        Object[] temp = new Object[capacity * 2];
-        //O(n) loop to copy elements to bigger array
-        if (capacity >= 0) System.arraycopy(list, 0, temp, 0, capacity);
-        capacity *= 2;
-        //reassign array
-        list = (Type[]) temp;
+        capacity = capacity * 2;
+        Type[] list = (Type[]) new Comparable[capacity];
+        if (size >= 0) System.arraycopy(this.list, 0, list, 0, size);
+        this.list = list;
     }
 
     public void sort() {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size - 1; j++) {
-                if (list[i].compareTo(list[j]) < 0) {
-                    Type t1 = list[i];
-                    list[i] = list[j];
-                    list[j] = t1;
+                comparisons++;
+                if (list[j].compareTo(list[j + 1]) > 0) {
+                    Type temp = list[j];
+                    list[j] = list[j + 1];
+                    list[j + 1] = temp;
                 }
             }
         }
+    }
+
+    private void quicksort(int start, int finish) {
+        if (start >= finish) return;
+        int pivot = partition(start, finish);
+        quicksort(start, pivot - 1);
+        quicksort(pivot + 1, finish);
+    }
+
+    private int partition(int start, int finish) {
+        int i = start;
+        int j = finish + 1;
+        while (true) {
+            comparisons++;
+            while (list[++i].compareTo(list[start]) < 0) {
+                if (i == finish) break;
+            }
+            comparisons++;
+            while (list[--j].compareTo(list[start]) > 0) {
+                if (j == start) break;
+            }
+            if (i >= j) break;
+            comparisons++;
+            swap(i, j);
+        }
+        comparisons++;
+        swap(start, j);
+        return j;
+    }
+
+    public void swap(int left, int right) {
+        Type itemTemp = list[left];
+        list[left] = list[right];
+        list[right] = itemTemp;
     }
 }
