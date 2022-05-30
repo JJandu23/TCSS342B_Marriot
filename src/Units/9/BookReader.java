@@ -18,8 +18,8 @@ public class BookReader {
         long t1 = System.nanoTime();
         try {
             book = Files.readString(Paths.get(fileName));
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException exception) {
+            exception.printStackTrace();
         }
         long t2 = System.nanoTime();
 
@@ -30,10 +30,10 @@ public class BookReader {
         long duration;
         long start = System.currentTimeMillis();
         StringBuilder sb = new StringBuilder();
-        Scanner sc = new Scanner(book);
-        sc.useDelimiter("");
-        while(sc.hasNext()){
-            String s = sc.next();
+        Scanner scan = new Scanner(book);
+        scan.useDelimiter("");
+        while(scan.hasNext()){
+            String s = scan.next();
             Character ch = s.charAt(0);
             if((ch.compareTo('A') >= 0 && ch.compareTo('Z') <= 0) || (ch.compareTo('a') >= 0 && ch.compareTo('z') <= 0)
                     || (ch.compareTo('0') >= 0 && ch.compareTo('9') <= 0) || ch.equals('\'') ) {
@@ -47,10 +47,10 @@ public class BookReader {
                 }
             }
         }
-        sc.close();
+        scan.close();
         long now = System.currentTimeMillis();
         duration = now - start;
-        System.out.println("\nFinding words and adding them to a linked list... in " + duration + " milliseconds.");
+        System.out.println("\nFinding words and adding them to a linked list... in " + (duration / 10) + " milliseconds.");
         System.out.println("The linked list has a length of " + words.size() + ".");
         System.out.println();
     }
