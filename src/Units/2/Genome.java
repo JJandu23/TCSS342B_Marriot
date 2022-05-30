@@ -5,7 +5,7 @@ import java.util.Random;
 public class Genome implements Comparable<Genome> {
 
     protected MyLinkedList<Character> genes = new MyLinkedList<>();
-    private final MyLinkedList<Character> target;
+    private MyLinkedList<Character> target;
     public String name = "CHRISTOPHER PAUL MARRIOTT";
     public List<Character> Characters = Arrays.asList('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
             'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', ' ', '-', '\'');
@@ -30,7 +30,7 @@ public class Genome implements Comparable<Genome> {
         Character c = Characters.get(rand.nextInt(Characters.size()));
         int index = rand.nextInt(genes.size() + 1);
 
-        // Add a random character to the genes
+        // Adds random char to random location
         if (rand.nextDouble() < mutationRate) {
             if (genes.size() == 0) {
                 genes.add(c);
@@ -39,12 +39,12 @@ public class Genome implements Comparable<Genome> {
             }
         }
 
-        // Delete random char
+        // delete random char
         if (rand.nextDouble() < mutationRate && genes.size() >= 1) {
             genes.remove(index);
         }
 
-        // Run through list and replace random char with random char
+        // run through the list and replace each char with a random char
         for (int i = 0; i < genes.size(); i++) {
             if (rand.nextDouble() < mutationRate) {
                 genes.set(i, c);
@@ -52,10 +52,12 @@ public class Genome implements Comparable<Genome> {
         }
     }
 
-    // updates its genes to be the child of its genes and the other genome's genes
     public void crossover(Genome parent) {
+        Random rand = new Random();
         MyLinkedList<Character> newGenes = new MyLinkedList<>();
+
         int max = Math.max(genes.size(), parent.genes.size());
+
         for (int i = 0; i < max; i++) {
             if (genes.iterator().hasNext() && i < genes.size()) {
                 newGenes.add(genes.get(i));
@@ -65,20 +67,19 @@ public class Genome implements Comparable<Genome> {
         }
     }
 
-    // returns the fitness of the genome
     public int fitness() {
-        int l = (Math.abs(target.size() - genes.size()) * 2);
+        int fit = (Math.abs(target.size() - genes.size()) * 2);
         int min = Math.min(target.size(), genes.size());
         for (int i = 0; i < min; i++) {
             if (!(genes.get(i).equals(target.get(i)))) {
-                l++;
+                fit++;
             }
         }
-        return (-1 * l);
+        return (-1 * fit);
     }
 
     public int compareTo(Genome other) {
-        return this.fitness() - other.fitness();
+        return Integer.compare(this.fitness(), other.fitness());
     }
 
     public String toString() {
