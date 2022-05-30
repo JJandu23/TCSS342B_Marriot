@@ -2,18 +2,19 @@ import java.util.Random;
 
 public class Population {
 
-    public MyLinkedList<Genome> population = new MyLinkedList<>();
-    public Genome mostFit = null;
-    private int size = 0;
-    private double mutationRate = 0.01;
+    public MyLinkedList<Genome> population;
+    public Genome mostFit;
+    private int size;
+    private double mutationRate;
 
     public Population() {
         this.size = 100;
+        this.mutationRate = 0.05;
         this.population = new MyLinkedList<>();
-        for (int i = 0; i < this.size; i++) {
+        for (int i = 0; i < size; i++) {
             this.population.add(new Genome());
         }
-        this.mostFit = this.population.get(0);
+        this.mostFit = population.iterator().next();
     }
 
     public void nextGeneration() {
@@ -31,7 +32,6 @@ public class Population {
             population.set(i, new Genome(clone));
         }
         population.sort();
-
         // checks if the most fit genome is the same as the previous most fit genome
         this.mostFit = population.get(this.size - 1);
     }
