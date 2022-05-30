@@ -2,48 +2,58 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-// Updated to work with Genome/Population classes
-public class MyLinkedList1<Type extends Comparable<Type>> {
+/*
+ * Works with Genome/Population classes
+ */
+public class MyLinkedList1<Type extends Comparable> {
 
-    private Node first = null;
-    private Node last = null;
+    private Node first;
+    private Node last;
 
-    // add an item to the end of the list
+    public MyLinkedList() {
+        this.first = null;
+        this.last = null;
+    }
+
+    // adds an item to the end of the list
     public void add(Type item) {
-        Node newNode = new Node(item);
-        if (first == null) {
-            first = newNode;
+        if (isEmpty()) {
+            first = new Node(item);
         } else {
-            last.next = newNode;
-        }
-        last = newNode;
-    }
-
-    // add an item to the list at the specified index
-    public void add(Type item, int index) {
-        if (index < 0 || index > size()) {
-            throw new IndexOutOfBoundsException();
-        }
-        if (index == 0) {
-            first = new Node(item, first);
-        } else {
-            Node current = first;
-            for (int i = 0; i < index - 1; i++) {
-                current = current.next;
+            last = first;
+            while (last.next != null) {
+                last = last.next;
             }
-            current.next = new Node(item, current.next);
+            last.next = new Node(item);
         }
     }
 
-    // remove the item at the given index
-    public void remove(int index) {
+    // adds an item to the beginning of the list
+    public void add(Type item, int index) {
         Node current = first;
         for (int i = 0; i < index - 1; i++) {
             current = current.next;
         }
+        current.next = new Node(item, current.next);
     }
 
-    // returns the item at the given index
+    // remove an item from the list
+    public void remove(int index) {
+        Node temp = first;
+        if (index == 0) {
+            first = temp.next;
+            return;
+        }
+        for (int i = 0; temp != null && i < index - 1; i++) {
+            temp = temp.next;
+        }
+        if (temp == null || temp.next == null) {
+            return;
+        }
+        temp.next = temp.next.next;
+    }
+
+    // returns the item at the specified index
     public Type get(int index) {
         Node current = first;
         for (int i = 0; i < index; i++) {
@@ -52,7 +62,7 @@ public class MyLinkedList1<Type extends Comparable<Type>> {
         return current.item;
     }
 
-    // returns the index of the given item in the list
+    // replaces the item at the specified index
     public void set(int index, Type item) {
         Node current = first;
         for (int i = 0; i < index; i++) {
@@ -61,23 +71,21 @@ public class MyLinkedList1<Type extends Comparable<Type>> {
         current.item = item;
     }
 
-    // returns the size of the list
     public int size() {
-        int size = 0;
         Node current = first;
+        int count = 0;
         while (current != null) {
-            size++;
             current = current.next;
+            count++;
         }
-        return size;
+        return count;
     }
 
-    // return whether list is empty
     public boolean isEmpty() {
-        return first == null;
+        return this.size() == 0;
     }
 
-    // iterates through list
+    // iterates through the list and prints each item
     public Iterator<Type> iterator() {
         if (isEmpty()) {
             return Collections.emptyIterator();
@@ -105,6 +113,7 @@ public class MyLinkedList1<Type extends Comparable<Type>> {
         };
     }
 
+    // arranges the list in ascending order
     public void sort() {
         Node firstNode = first;
         Node nextNode = first.next;
@@ -128,12 +137,12 @@ public class MyLinkedList1<Type extends Comparable<Type>> {
         }
     }
 
-    // returns whether the list contains the given item in String form
+    // returns the index of the specified item
     public String toString() {
         StringBuilder result = new StringBuilder();
-        Node current = first;
+        Node current = this.first;
         while (current != null) {
-            result.append(current.item);
+            result.append(current);
             current = current.next;
         }
         return result.toString();
