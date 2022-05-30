@@ -1,6 +1,5 @@
 // MyPriorityQueue class
 public class MyPriorityQueue<Type extends Comparable<Type>> {
-
     private MyArrayList<Type> heap;
 
     public MyPriorityQueue() {
