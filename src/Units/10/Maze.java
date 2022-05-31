@@ -4,18 +4,19 @@ import java.util.Random;
 
 public class Maze {
 
-    private int width; // Maze grid column
-    private int height; // Maze grid row
-    private boolean debug; // Debug mode control
-    private char[][] myMaze; // Maze grid; height x width (row x column)
-    private boolean[][] validPoint; // Use to check the valid point
-    private ArrayList<Point> visited; // List of visited point
-    private ArrayList<Point> mazePoint; // List of all point
-    private Random rand = new Random(); // Use to random choose the point
+    private int width; // width of the maze
+    private int height; // height of the maze
+    private boolean debug; // debug mode
+    private char[][] myMaze;
+    private boolean[][] validPoint; // validPoint[i][j] is true if (i,j) is a valid point
+    private ArrayList<Point> visited; // visited[i] is true if (i,j) is visited
+    private ArrayList<Point> mazePoint; // mazePoint[i] is true if (i,j) is a maze point
+    private Random rand = new Random(); // random number generator
 
-    public Maze(int width, int height, boolean debug) {
-        this.height = 2 * height + 1;
-        this.width = 2 * width + 1;
+    // Constructor
+    public Maze(int n, int m, boolean debug) {
+        this.height = 2 * m + 1;
+        this.width = 2 * n + 1;
         this.debug = debug;
         myMaze = new char[height][width];
         validPoint = new boolean[height][width];
@@ -24,6 +25,7 @@ public class Maze {
         buildMaze();
     }
 
+    // build the graph
     private void buildGraph() {
         for (int n = 0; n < height; n++) {
             for (int m = 0; m < width; m++) {
@@ -37,20 +39,20 @@ public class Maze {
                 }
             }
         }
-        myMaze[0][1] = ' ';
-        myMaze[height - 1][width - 2] = ' ';
+        myMaze[0][1] = ' '; // top left corner entrance
+        myMaze[height - 1][width - 2] = ' '; // bottom right corner exit
     }
 
+    // build the maze
     private void buildMaze() {
         buildGraph();
-        Point current = new Point(1, 1);
-        markVisited(current);
+        Point curr = new Point(1, 1);
+        markVisited(curr);
         Point end = new Point(height - 2, width - 2);
         ArrayList<Point> validMoves;
         ArrayList<Point> path = new ArrayList<>();
-
         while (!visited.isEmpty()) {
-            validMoves = checkValidPoint(current);
+            validMoves = solveMaze(curr);
             int numberOfPoint = validMoves.size();
             if (numberOfPoint != 0) {
                 if (debug) {
@@ -58,18 +60,18 @@ public class Maze {
                 }
                 int move = rand.nextInt(numberOfPoint);
                 Point next = validMoves.get(move);
-                int x = (int) ((current.getX() + next.getX()) / 2);
-                int y = (int) ((current.getY() + next.getY()) / 2);
+                int x = (int) ((curr.getX() + next.getX()) / 2);
+                int y = (int) ((curr.getY() + next.getY()) / 2);
                 myMaze[x][y] = ' ';
                 markVisited(next);
-                current = next;
-                if (current.equals(end)) {
+                curr = next;
+                if (curr.equals(end)) {
                     path = new ArrayList<>(visited);
                 }
             } else {
                 visited.remove(visited.size() - 1);
                 if (!visited.isEmpty()) {
-                    current = visited.get(visited.size() - 1);
+                    curr = visited.get(visited.size() - 1);
                 }
             }
         }
@@ -84,7 +86,8 @@ public class Maze {
         }
     }
 
-    private ArrayList<Point> checkValidPoint(Point point) {
+    // solveMaze returns a list of valid moves from current point
+    private ArrayList<Point> solveMaze(Point point) {
         ArrayList<Point> unVisited = new ArrayList<>();
         int x = (int) point.getX();
         int y = (int) point.getY();
@@ -111,6 +114,7 @@ public class Maze {
         return unVisited;
     }
 
+    // markVisited marks the point as visited
     private void markVisited(Point point) {
         int x = (int) point.getX();
         int y = (int) point.getY();
@@ -122,6 +126,7 @@ public class Maze {
         mazePoint.add(point);
     }
 
+    // display displays the maze
     public void display() {
         for (int n = 0; n < height; n++) {
             for (int m = 0; m < width; m++) {
@@ -132,6 +137,7 @@ public class Maze {
         System.out.println("\n");
     }
 
+    // getMaze returns the maze
     public String toString() {
         while (!visited.isEmpty()) {
             int x = (int) visited.get(visited.size() - 1).getX();
