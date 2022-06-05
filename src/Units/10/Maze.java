@@ -13,7 +13,24 @@ public class Maze {
     private ArrayList<Point> mazePoint; // mazePoint[i] is true if (i,j) is a maze point
     private Random rand = new Random(); // random number generator
 
-    // Constructor
+    public Maze(int width, int height) {
+        this.width = width;
+        this.height = height;
+        myMaze = new char[height][width];
+        validPoint = new boolean[height][width];
+        visited = new ArrayList<>();
+        mazePoint = new ArrayList<>();
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                myMaze[i][j] = ' ';
+                validPoint[i][j] = true;
+            }
+        }
+        // initialize the maze
+        buildMaze();
+    }
+
+//     Constructor
     public Maze(int n, int m, boolean debug) {
         this.height = 2 * m + 1;
         this.width = 2 * n + 1;
